@@ -25,7 +25,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create New Account"
+        android:text="Sign In"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -70,11 +70,11 @@
         app:layout_constraintVertical_bias="0.07999998" />
 
     <Button
-        android:id="@+id/registerBtn"
+        android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="Register"
+        android:text="Login"
         android:textColor="@color/design_default_color_surface"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -92,7 +92,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerBtn"
+        app:layout_constraintTop_toBottomOf="@+id/loginBtn"
         app:layout_constraintVertical_bias="0.100000024" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
