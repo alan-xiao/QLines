@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "120060457486",
+    "firebase_url": "https://qlines-e436b.firebaseio.com",
+    "project_id": "qlines-e436b",
+    "storage_bucket": "qlines-e436b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120060457486:android:5e7c6822912ab967aac25f",
+        "android_client_info": {
+          "package_name": "com.example.qlines"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "120060457486-9hrrkllotu5gk7f6k8i7pao74tdfs7cj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.qlines",
+            "certificate_hash": "1f5ca6da76412b6160a58f81e09cc2ce3eab6b3a"
+          }
+        },
+        {
+          "client_id": "120060457486-bdh7n41tolppmb88eclt3av41gfqcgrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRG7VS0I-i83_DH_cQizQ3u7oED69zzG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "120060457486-bdh7n41tolppmb88eclt3av41gfqcgrv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
