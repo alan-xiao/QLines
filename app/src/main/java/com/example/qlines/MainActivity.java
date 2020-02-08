@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     if (i == 3) {
                         String str = ds.getValue().toString();
                         String[] arr = str.split("=\\{");
-                        //
+                        System.out.println("Arr length: " + arr.length);
                         for (int k = 0; k < arr.length - 1; k++) {
                             reports.add(new Report());
                             if (k != arr.length - 2) {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                             else {
-                                int lastComma = arr[i+1].lastIndexOf(',');
+                                int lastComma = arr[k+1].lastIndexOf(',');
                                 int secondLastComma = arr[k+1].substring(0, lastComma).lastIndexOf(',');
                                 reports.get(k).setTime(arr[k+1].substring(lastComma + 12, arr[k+1].length() - 2));
                                 reports.get(k).setUser_id(arr[k+1].substring(secondLastComma + 10, lastComma));
@@ -80,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         values.add(ds.getValue().toString());
                     }
+                    i++;
                 }
                 locations.add(new Location(values.get(1), values.get(0), values.get(2), reports));
-                System.out.println(reports.size());
+                System.out.println("Size of Report for " + values.get(1) + " : " + reports.size());
                 list.add(locations.get(locations.size() - 1).getName());
                 listView.setAdapter(adapter);
             }
