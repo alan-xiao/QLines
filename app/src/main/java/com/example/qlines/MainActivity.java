@@ -2,31 +2,24 @@ package com.example.qlines;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> list;
     private ArrayAdapter<String> adapter;
     private Location location;
+    private ArrayList<Location> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +44,46 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("locations");
         list = new ArrayList<>();
+        locations = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, R.layout.location_info, R.id.locationInfo, list);
         ref.addChildEventListener(new ChildEventListener() {
             private void refresh(DataSnapshot dataSnapshot) {
+                int i = 0;
                 ArrayList<String> values = new ArrayList<>(3);
+                ArrayList<Report> reports = new ArrayList<>();
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    System.out.println(ds.getValue());
+                    if (i == 3) {
+                        String str = ds.getValue().toString();
+                        String[] arr = str.split("=\\{");
+                        //
+                        for (int k = 0; k < arr.length - 1; k++) {
+                            reports.add(new Report());
+                            if (k != arr.length - 2) {
+                                int lastComma = arr[k+1].lastIndexOf(',');
+                                int secondLastComma = arr[k+1].substring(0, lastComma).lastIndexOf(',');
+                                int thirdLastComma = arr[k+1].substring(0, secondLastComma).lastIndexOf(',');
+                                reports.get(k).setTime(arr[k+1].substring(secondLastComma + 12, lastComma - 1));
+                                reports.get(k).setUser_id(arr[k+1].substring(thirdLastComma + 10, secondLastComma));
+                                reports.get(k).setRep_desc(arr[k+1].substring(9, thirdLastComma));
+
+
+                            }
+                            else {
+                                int lastComma = arr[i+1].lastIndexOf(',');
+                                int secondLastComma = arr[k+1].substring(0, lastComma).lastIndexOf(',');
+                                reports.get(k).setTime(arr[k+1].substring(lastComma + 12, arr[k+1].length() - 2));
+                                reports.get(k).setUser_id(arr[k+1].substring(secondLastComma + 10, lastComma));
+                                reports.get(k).setRep_desc(arr[k+1].substring(9, secondLastComma));
+                            }
+                        }
+
+                    } else {
+                        values.add(ds.getValue().toString());
+                    }
                 }
-                //location = new Location(values.get(1), values.get(0), values.get(2));
-                //list.add(location.getName());
+                locations.add(new Location(values.get(1), values.get(0), values.get(2), reports));
+                System.out.println(reports.size());
+                list.add(locations.get(locations.size() - 1).getName());
                 listView.setAdapter(adapter);
             }
             @Override
