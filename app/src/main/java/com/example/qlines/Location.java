@@ -1,20 +1,20 @@
 package com.example.qlines;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Location implements Serializable {
 
     private String name;
     private String loc_desc;
     private String phone;
-    private ArrayList<Report> reports;
+    private HashMap<String, Report> reports;
 
-    public ArrayList<Report> getReports() {
+    public HashMap<String, Report> getReports() {
         return reports;
     }
 
-    public void setReports(ArrayList<Report> reports) {
+    public void setReports(HashMap<String,Report> reports) {
         this.reports = reports;
     }
 
@@ -22,7 +22,7 @@ public class Location implements Serializable {
 
     }
 
-    public Location(String name, String loc_desc, String phone, ArrayList<Report> reports) {
+    public Location(String name, String loc_desc, String phone, HashMap<String, Report> reports) {
         this.name = name;
         this.loc_desc = loc_desc;
         this.phone = phone;

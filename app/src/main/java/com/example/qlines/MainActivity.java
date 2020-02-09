@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference ref;
     private ArrayList<String> list;
     private ArrayAdapter<String> adapter;
-    private ArrayList<Location> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,61 +43,23 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("locations");
         list = new ArrayList<>();
-        locations = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, R.layout.location_info, R.id.locationInfo, list);
         ref.addChildEventListener(new ChildEventListener() {
-            private void refresh(DataSnapshot dataSnapshot) {
-                int i = 0;
-                ArrayList<String> values = new ArrayList<>(3);
-                ArrayList<Report> reports = new ArrayList<>();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (i == 3) {
-                        String str = ds.getValue().toString();
-                        String[] arr = str.split("=\\{");
-                        System.out.println("Arr length: " + arr.length);
-                        for (int k = 0; k < arr.length - 1; k++) {
-                            reports.add(new Report());
-                            if (k != arr.length - 2) {
-                                int lastComma = arr[k + 1].lastIndexOf(',');
-                                int secondLastComma = arr[k + 1].substring(0, lastComma).lastIndexOf(',');
-                                int thirdLastComma = arr[k + 1].substring(0, secondLastComma).lastIndexOf(',');
-                                reports.get(k).setTime(arr[k + 1].substring(secondLastComma + 12, lastComma - 1));
-                                reports.get(k).setUser_id(arr[k + 1].substring(thirdLastComma + 10, secondLastComma));
-                                reports.get(k).setRep_desc(arr[k + 1].substring(9, thirdLastComma));
-
-
-                            } else {
-                                int lastComma = arr[k + 1].lastIndexOf(',');
-                                int secondLastComma = arr[k + 1].substring(0, lastComma).lastIndexOf(',');
-                                reports.get(k).setTime(arr[k + 1].substring(lastComma + 12, arr[k + 1].length() - 2));
-                                reports.get(k).setUser_id(arr[k + 1].substring(secondLastComma + 10, lastComma));
-                                reports.get(k).setRep_desc(arr[k + 1].substring(9, secondLastComma));
-                            }
-                        }
-
-                    } else {
-                        values.add(ds.getValue().toString());
-                    }
-                    i++;
-                }
-                locations.add(new Location(values.get(1), values.get(0), values.get(2), reports));
-                System.out.println("Size of Report for " + values.get(1) + " : " + reports.size());
-                list.add(locations.get(locations.size() - 1).getName());
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Location location = dataSnapshot.getValue(Location.class);
+                list.add(location.getName());
                 listView.setAdapter(adapter);
             }
 
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                System.out.println("onChildAdded Entered");
-                this.refresh(dataSnapshot);
-            }
-
-            @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
             }
 
             @Override
@@ -111,12 +72,47 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+//        ref.addChildEventListener(new ChildEventListener() {
+//            private void refresh(DataSnapshot dataSnapshot) {
+//                int i = 0;
+//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                    if (i != 3) {
+//                        list.add(ds.getValue().toString());
+//                    }
+//                    i++;
+//                }
+//                listView.setAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                this.refresh(dataSnapshot);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent myintent = new Intent(view.getContext(), ReportsActivity.class);
-                myintent.putExtra("location", locations.get(position));
+                myintent.putExtra("index", position);
                 startActivity(myintent);
             }
         });
