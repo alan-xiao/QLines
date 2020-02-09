@@ -37,7 +37,6 @@ public class ReportsActivity extends AppCompatActivity {
         Intent myintent = getIntent();
         position = myintent.getIntExtra("index", 0);
         String pos = "0" + (position + 1);
-        System.out.println("Reports pos: " + pos);
         listView = findViewById(R.id.reports);
 
         database = FirebaseDatabase.getInstance();
@@ -49,7 +48,8 @@ public class ReportsActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Report report = dataSnapshot.getValue(Report.class);
-                list.add(report.getTimestampString().toString());
+                Long timestamp = (Long) report.getTimestamp();
+                list.add(timestamp.toString());
                 listView.setAdapter(adapter);
             }
 
@@ -79,7 +79,6 @@ public class ReportsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myintent = new Intent(view.getContext(), InputActivity.class);
-                System.out.println("Sending to Input: " + position);
                 myintent.putExtra("index", position);
                 startActivity(myintent);
             }
