@@ -1,32 +1,21 @@
 package com.example.qlines;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 public class Location implements Serializable {
 
     private String name;
     private String loc_desc;
     private String phone;
-    private HashMap<String, Report> reports;
-
-    public HashMap<String, Report> getReports() {
-        return reports;
-    }
-
-    public void setReports(HashMap<String,Report> reports) {
-        this.reports = reports;
-    }
 
     public Location() {
 
     }
 
-    public Location(String name, String loc_desc, String phone, HashMap<String, Report> reports) {
+    public Location(String name, String loc_desc, String phone) {
         this.name = name;
         this.loc_desc = loc_desc;
         this.phone = phone;
-        this.reports = reports;
     }
 
     public String getName() {
