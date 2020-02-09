@@ -10,6 +10,14 @@ public class Location implements Serializable {
     private String phone;
     private ArrayList<Report> reports;
 
+    public ArrayList<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(ArrayList<Report> reports) {
+        this.reports = reports;
+    }
+
     public Location() {
 
     }

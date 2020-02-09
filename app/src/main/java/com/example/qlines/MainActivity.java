@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference ref;
     private ArrayList<String> list;
     private ArrayAdapter<String> adapter;
-    private Location location;
     private ArrayList<Location> locations;
 
     @Override
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 int i = 0;
                 ArrayList<String> values = new ArrayList<>(3);
                 ArrayList<Report> reports = new ArrayList<>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (i == 3) {
                         String str = ds.getValue().toString();
                         String[] arr = str.split("=\\{");
@@ -60,21 +59,20 @@ public class MainActivity extends AppCompatActivity {
                         for (int k = 0; k < arr.length - 1; k++) {
                             reports.add(new Report());
                             if (k != arr.length - 2) {
-                                int lastComma = arr[k+1].lastIndexOf(',');
-                                int secondLastComma = arr[k+1].substring(0, lastComma).lastIndexOf(',');
-                                int thirdLastComma = arr[k+1].substring(0, secondLastComma).lastIndexOf(',');
-                                reports.get(k).setTime(arr[k+1].substring(secondLastComma + 12, lastComma - 1));
-                                reports.get(k).setUser_id(arr[k+1].substring(thirdLastComma + 10, secondLastComma));
-                                reports.get(k).setRep_desc(arr[k+1].substring(9, thirdLastComma));
+                                int lastComma = arr[k + 1].lastIndexOf(',');
+                                int secondLastComma = arr[k + 1].substring(0, lastComma).lastIndexOf(',');
+                                int thirdLastComma = arr[k + 1].substring(0, secondLastComma).lastIndexOf(',');
+                                reports.get(k).setTime(arr[k + 1].substring(secondLastComma + 12, lastComma - 1));
+                                reports.get(k).setUser_id(arr[k + 1].substring(thirdLastComma + 10, secondLastComma));
+                                reports.get(k).setRep_desc(arr[k + 1].substring(9, thirdLastComma));
 
 
-                            }
-                            else {
-                                int lastComma = arr[k+1].lastIndexOf(',');
-                                int secondLastComma = arr[k+1].substring(0, lastComma).lastIndexOf(',');
-                                reports.get(k).setTime(arr[k+1].substring(lastComma + 12, arr[k+1].length() - 2));
-                                reports.get(k).setUser_id(arr[k+1].substring(secondLastComma + 10, lastComma));
-                                reports.get(k).setRep_desc(arr[k+1].substring(9, secondLastComma));
+                            } else {
+                                int lastComma = arr[k + 1].lastIndexOf(',');
+                                int secondLastComma = arr[k + 1].substring(0, lastComma).lastIndexOf(',');
+                                reports.get(k).setTime(arr[k + 1].substring(lastComma + 12, arr[k + 1].length() - 2));
+                                reports.get(k).setUser_id(arr[k + 1].substring(secondLastComma + 10, lastComma));
+                                reports.get(k).setRep_desc(arr[k + 1].substring(9, secondLastComma));
                             }
                         }
 
@@ -88,19 +86,19 @@ public class MainActivity extends AppCompatActivity {
                 list.add(locations.get(locations.size() - 1).getName());
                 listView.setAdapter(adapter);
             }
+
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                System.out.println("onChildAdded Entered");
                 this.refresh(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                this.refresh(dataSnapshot);
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                this.refresh(dataSnapshot);
             }
 
             @Override
@@ -117,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myintent = new Intent(view.getContext(),Reports.class);
+                Intent myintent = new Intent(view.getContext(), ReportsActivity.class);
                 myintent.putExtra("location", locations.get(position));
                 startActivity(myintent);
             }
