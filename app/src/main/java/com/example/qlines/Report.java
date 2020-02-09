@@ -1,6 +1,8 @@
 package com.example.qlines;
 
-public class Report {
+import java.io.Serializable;
+
+public class Report implements Serializable {
     private String rep_desc;
     private String time;
     private String user_id;
