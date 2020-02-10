@@ -26,9 +26,7 @@ public class InputActivity extends AppCompatActivity {
         setContentView(R.layout.activity_input);
         Intent myintent = getIntent();
         int position = myintent.getIntExtra("index", 0);
-        System.out.println("Before increment: " + position);
         String pos = "0" + (position + 1);
-        System.out.println("Input pos: " + pos);
         desc = findViewById(R.id.desc);
         save = findViewById(R.id.writeButton);
         ref = FirebaseDatabase.getInstance().getReference("locations/loc" + pos + "/reports");
@@ -38,6 +36,7 @@ public class InputActivity extends AppCompatActivity {
                 report = new Report(desc.getText().toString().trim(), fAuth.getCurrentUser().getUid());
                 ref.push().setValue(report);
                 Toast.makeText(InputActivity.this, "Data Inserted Successfully",Toast.LENGTH_LONG).show();
+                finish();
             }
         });
     }
