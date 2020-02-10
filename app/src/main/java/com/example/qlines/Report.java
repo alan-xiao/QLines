@@ -5,8 +5,8 @@ import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @IgnoreExtraProperties
 public class Report implements Serializable {
@@ -62,19 +62,78 @@ public class Report implements Serializable {
     }
 
     public String getTimeAgoString() {
+        TimeUnit timeUnit = TimeUnit.MINUTES;
+        Date current = new Date();
+        Date created = this.getTime();
+        if (created == null) {
+            return "";
+        } else {
+            long diff = current.getTime() - this.getTime().getTime();
+            System.out.println(diff);
+            Long ans = timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+            if (ans == 0) {
+                ans++;
+                return ans.toString() + " Minute Ago";
+            }
+            if (ans % 60 == 0) {
+                ans /= 60;
+                if (ans == 1) {
+                    return ans.toString() + " Hour Ago";
+                } else {
+                    return ans.toString() + " Hours Ago";
+                }
+            }
+            if (ans > 60) {
+                Long hours = ans/60;
+                Long minutes = ans%60;
+                if (hours == 1) {
+                    if (minutes == 1) {
+                        return hours.toString() + " Hour " + minutes.toString() + " Minute Ago";
+                    } else {
+                        return hours.toString() + " Hour " + minutes.toString() + " Minutes Ago";
+                    }
+                } else {
+                    if (minutes == 1) {
+                        return hours.toString() + " Hours " + minutes.toString() + " Minute Ago";
+                    } else {
+                        return hours.toString() + " Hours " + minutes.toString() + " Minutes Ago";
+                    }
+                }
+
+            } else {
+                if (ans == 1) {
+                    return ans.toString() + " Minute Ago";
+                } else {
+                    return ans.toString() + " Minutes Ago";
+                }
+            }
+        }
+    }
+
+    public Date getTime() {
         try {
             Date date = new Date((Long) this.getTimestamp());
+            System.out.println(date);
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat now_sdf = new SimpleDateFormat("HH:mm:ss");
-            String ans = sdf.format(date);
-            if (ans.substring(0,1).equals("0")) {
-                return ans.substring(1);
-            } else {
-                return sdf.format(date);
-            }
+//            Calendar cal = Calendar.getInstance();
+//            SimpleDateFormat now_sdf = new SimpleDateFormat("HH:mm:ss");
+            return date;
         } catch (Exception e) {
-            return "";
+            return null;
+        }
+    }
+
+    public boolean notShow() {
+        TimeUnit timeUnit = TimeUnit.MINUTES;
+        Date current = new Date();
+        Date created = this.getTime();
+        if (created == null) {
+            return false;
+        } else {
+            long diff = current.getTime() - this.getTime().getTime();
+            System.out.println(diff);
+            Long ans = timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+            return ans > 360;
         }
     }
 }

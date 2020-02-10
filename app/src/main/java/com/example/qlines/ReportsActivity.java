@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -19,15 +20,21 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class ReportsActivity extends AppCompatActivity {
     private ListView listView;
     private FirebaseDatabase database;
     private DatabaseReference ref;
     private ArrayList<String> list;
+    private ArrayList<Report> reports;
+    private ArrayList<String> keys;
     private ArrayAdapter<String> adapter;
     private int locationPosition;
-    private ArrayList<String> keys;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TimeUnit timeUnit;
+
 
 
     @Override
@@ -41,23 +48,29 @@ public class ReportsActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("locations/loc" + pos + "/reports");
+        Date now = new Date();
         list = new ArrayList<>();
+        reports = new ArrayList<>();
         keys = new ArrayList<>();
+        timeUnit = TimeUnit.MINUTES;
         adapter = new ArrayAdapter<>(this, R.layout.report_info, R.id.reportInfo, list);
 
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                list.clear();
+                reports.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Report report = ds.getValue(Report.class);
-                    list.add(report.getTimeAgoString());
-                    keys.add(ds.getKey());
+                    if (!report.notShow()) {
+                        reports.add(report);
+                        keys.add(ds.getKey());
+                    }
                 }
-                Collections.reverse(list);
+                Collections.reverse(reports);
                 Collections.reverse(keys);
-                listView.setAdapter(adapter);
+                System.out.println(keys);
+                updateList();
             }
 
             @Override
@@ -86,5 +99,22 @@ public class ReportsActivity extends AppCompatActivity {
             }
         });
 
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateList();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+    }
+
+    private void updateList() {
+        list.clear();
+        for (Report r : reports) {
+            list.add(r.getTimeAgoString());
+        }
+        listView.setAdapter(adapter);
     }
 }
